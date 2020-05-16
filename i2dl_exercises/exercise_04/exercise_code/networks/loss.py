@@ -35,7 +35,7 @@ class L1(Loss):
         # Implement the forward pass and return the output of the L1 loss.      #
         #########################################################################
 
-        
+        result = abs(y_out - y_truth)
         
         #########################################################################
         #                       END OF YOUR CODE                                #
@@ -59,7 +59,7 @@ class L1(Loss):
         # hint: you may use np.where here.                                        #
         ###########################################################################
 
-
+        gradient = np.where(not np.all(y_out==0), 0, 1.e-18)
 
         ###########################################################################
         #                           END OF YOUR CODE                              #
@@ -77,7 +77,7 @@ class MSE(Loss):
                 y_truth: [N, ] array ground truth value of your training set. 
         :return: [N, ] array of MSE loss for each sample of your training set. 
         """    
-        result = None
+        result = (np.square(np.subtract(y_out, y_truth)))
         #########################################################################
         # TODO:                                                                 #
         # Implement the forward pass and return the output of the MSE loss.     #
@@ -104,6 +104,7 @@ class MSE(Loss):
         # Implement the backward pass. Return the gradient wrt y_out              #
         ###########################################################################
 
+        gradient = np.multiply(2, np.subtract(y_out, y_truth))
 
         ###########################################################################
         #                           END OF YOUR CODE                              #
