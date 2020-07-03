@@ -58,7 +58,7 @@ class SegmentationNN(pl.LightningModule):
         torch.save(self, path)
 
         
-class DummySegmentationModel(nn.Module):
+class DummySegmentationModel(pl.LightningModule):
 
     def __init__(self, target_image):
         super().__init__()
