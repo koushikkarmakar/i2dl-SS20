@@ -2,8 +2,8 @@
 import torch
 import torch.nn as nn
 import pytorch_lightning as pl
+import torchvision.models as models
 import torch.nn.functional as F
-from torchvision import models
 
 class SegmentationNN(pl.LightningModule):
 
