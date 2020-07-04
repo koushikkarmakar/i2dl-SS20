@@ -2,7 +2,6 @@
 import torch
 import torch.nn as nn
 import pytorch_lightning as pl
-import torchvision.models as models
 import torch.nn.functional as F
 
 class SegmentationNN(pl.LightningModule):
@@ -13,8 +12,29 @@ class SegmentationNN(pl.LightningModule):
         #######################################################################
         #                             YOUR CODE                               #
         #######################################################################
+        
+        self.network = nn.Sequential(
+            nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False),
+            nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False),
+            nn.Conv2d(128, 256, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(256, 256, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(256, 256, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False),
+            nn.Conv2d(256, 512, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(inplace=True)
+        )
 
-        self.network = models.vgg16(pretrained = True).features[0:19] 
         self.conv = nn.Sequential(nn.Conv2d(512,256, kernel_size = 1),
                                     nn.ReLU (inplace = True),
                                     nn.Conv2d(256,num_classes, kernel_size = 1))
