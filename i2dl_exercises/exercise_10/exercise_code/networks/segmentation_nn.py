@@ -2,7 +2,6 @@
 import torch
 import torch.nn as nn
 import pytorch_lightning as pl
-import torch.nn.functional as F
 
 class SegmentationNN(pl.LightningModule):
 
@@ -26,18 +25,11 @@ class SegmentationNN(pl.LightningModule):
             nn.MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False),
             nn.Conv2d(128, 256, kernel_size=3, stride=1, padding=1),
             nn.ReLU(inplace=True),
-            nn.Conv2d(256, 256, kernel_size=3, stride=1, padding=1),
-            nn.ReLU(inplace=True),
-            nn.Conv2d(256, 256, kernel_size=3, stride=1, padding=1),
-            nn.ReLU(inplace=True),
-            nn.MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False),
-            nn.Conv2d(256, 512, kernel_size=3, stride=1, padding=1),
-            nn.ReLU(inplace=True)
         )
 
-        self.conv = nn.Sequential(nn.Conv2d(512,256, kernel_size = 1),
-                                    nn.ReLU (inplace = True),
-                                    nn.Conv2d(256,num_classes, kernel_size = 1))
+        self.conv = nn.Sequential(
+            nn.Conv2d(256, num_classes, kernel_size=(1, 1), stride=(1, 1))
+            )
 
         #######################################################################
         #                           END OF YOUR CODE                          #
@@ -54,10 +46,10 @@ class SegmentationNN(pl.LightningModule):
         #######################################################################
         #                             YOUR CODE                               #
         #######################################################################
-
+        x_input = x
         x = self.network(x)
         x = self.conv(x)
-        x = F.interpolate(x, size = (240,240), mode = "bilinear", align_corners = True)
+        x = nn.functional.upsample(x, x_input.size()[2:], mode='bilinear').contiguous()
 
         #######################################################################
         #                           END OF YOUR CODE                          #
