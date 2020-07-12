@@ -17,7 +17,11 @@ class RNN_Classifier(Base_Classifier):
     #  TODO: Build a RNN classifier                                            #
     ############################################################################
 
-
+        self.hidden_size = hidden_size
+        self.RNN = nn.RNN(input_size, hidden_size)
+        self.fc1 = nn.Linear(hidden_size, 64)
+        self.fc2 = nn.Linear(64, classes)
+    
     ############################################################################
     #                             END OF YOUR CODE                             #
     ############################################################################
@@ -27,7 +31,10 @@ class RNN_Classifier(Base_Classifier):
     ############################################################################
     #  TODO: Perform the forward pass                                          #
     ############################################################################   
-
+        batch_size = x.size()[1]
+        rec, x = self.RNN(x)
+        x = F.dropout(F.relu(self.fc1(x.reshape(batch_size, self.hidden_size))))
+        x = F.relu(self.fc2(x))
 
     ############################################################################
     #                             END OF YOUR CODE                             #
@@ -43,7 +50,10 @@ class LSTM_Classifier(Base_Classifier):
         #######################################################################
         #  TODO: Build a LSTM classifier                                      #
         #######################################################################
-           
+        self.hidden_size = hidden_size
+        self.LSTM = nn.LSTM(input_size, hidden_size)
+        self.fc1 = nn.Linear(hidden_size, 64)
+        self.fc2 = nn.Linear(64, classes)
 
         #######################################################################
         #                          END OF YOUR CODE                           #
@@ -55,7 +65,10 @@ class LSTM_Classifier(Base_Classifier):
         #######################################################################
         #  TODO: Perform the forward pass                                     #
         #######################################################################    
-
+        batch_size = x.size()[1]
+        rec, (x, _) = self.LSTM(x)
+        x = F.dropout(F.relu(self.fc1(x.reshape(batch_size, self.hidden_size))))
+        x = F.relu(self.fc2(x))
 
         #######################################################################
         #                          END OF YOUR CODE                           #
